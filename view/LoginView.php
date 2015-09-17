@@ -10,7 +10,12 @@ class LoginView {
 	private static $keep = 'LoginView::KeepMeLoggedIn';
 	private static $messageId = 'LoginView::Message';
 
+	private $user;
+	private $persistantUserName = '';
 	
+	//public function __construct(User $u){
+		//$this->user = $u;
+	//}
 
 	/**
 	 * Create HTTP response
@@ -19,20 +24,47 @@ class LoginView {
 	 *
 	 * @return  void BUT writes to standard output and cookies!
 	 */
-	public function response() {
-		if(!isset($_POST[self::$name]) || empty($_POST[self::$name])) {
-		$message = 'Username is missing';
-		}
-		//else if(!isset($_POST[self::$password]) || empty($_POST[self::$password])){
-		//	$message = 'Password is missing';
-		//}
-		else {
-			$message = '';
-		}
-		$response = $this->generateLoginFormHTML($message);
-		//$response .= $this->generateLogoutButtonHTML($message);
-		return $response;
+	public function response($message) {
+	//	$message = '';
+		
+	//	if($this->didUserPressLogin()){
+	
+	//		if(empty($_POST[self::$name])) {
+	//			$message = 'Username is missing';
+	//		} else if($_POST[self::$name] == $this->user->getName() && empty($_POST[self::$password])){
+	//			$message = 'Password is missing';
+	//			$this->persistantUserName = $_POST[self::$name];
+	//		} else if(empty($_POST[self::$name]) && $_POST[self::$password] == $this->user->getPassword()){
+	//			$message = 'Username is missing';
+	//		} else if($_POST[self::$name] == $this->user->getName() && $_POST[self::$password] != $this->user->getPassword()){
+	//			$message = 'Wrong name or password';
+	//			$this->persistantUserName = $_POST[self::$name];
+	//		} else if($_POST[self::$name] != $this->user->getName() && $_POST[self::$password] == $this->user->getPassword()){
+	//			$message = 'Wrong name or password';
+	//			$this->persistantUserName = $_POST[self::$name];
+	//		} else if($_POST[self::$name] != $this->user->getName() && empty($_POST[self::$password])){
+	//			$message = 'Password is missing';
+//				$this->persistantUserName = $_POST[self::$name];
+//			} else if($_POST[self::$name] != $this->user->getName() && $_POST[self::$password] != $this->user->getPassword()){
+//				$message = 'Wrong name or password';
+	//			$this->persistantUserName = $_POST[self::$name];
+	//		} else if($_POST[self::$name] == $this->user->getName() && $_POST[self::$password] == $this->user->getPassword()){
+	//			$message = 'Welcome';
+	//			return $this->generateLogoutButtonHTML($message);
+	//		}
+			return $this->generateLoginFormHTML($message);
+	//	}
+	//	else{
+	//	return $this->generateLoginFormHTML($message);
+	//	}
+	
+		//return $response;
 	}
+	
+	public function didUserPressLogin(){
+		return isset($_POST[self::$login]);
+	}
+	
 
 	/**
 	* Generate HTML code on the output buffer for the logout button
@@ -61,7 +93,7 @@ class LoginView {
 					<p id="' . self::$messageId . '">' . $message . '</p>
 					
 					<label for="' . self::$name . '">Username :</label>
-					<input type="text" id="' . self::$name . '" name="' . self::$name . '" value="" />
+					<input type="text" id="' . self::$name . '" name="' . self::$name . '" value="'. $this->persistantUserName .'" />
 
 					<label for="' . self::$password . '">Password :</label>
 					<input type="password" id="' . self::$password . '" name="' . self::$password . '" />
@@ -75,10 +107,36 @@ class LoginView {
 		';
 	}
 	
-	//CREATE GET-FUNCTIONS TO FETCH REQUEST VARIABLES
-	private function getRequestUserName() {
-		$username = $_POST[self::$name];
-		return $username;
+	public function getErrorUsername(){
+		return "Username is missing";
 	}
 	
+	public function getErrorPassword(){
+		return "Password is missing";
+	}
+	
+	public function getErrorElse(){
+		return "Wrong name or password";
+	}
+	
+	public function getWelcomeMessage(){
+		return "Welcome";
+	}
+	
+	public function getByeMessage(){
+		return "Bye, bye";
+	}
+	
+	//CREATE GET-FUNCTIONS TO FETCH REQUEST VARIABLES
+	public function getRequestUserName() {
+		if(isset($_POST[self::$name])){
+			return $_POST[self::$name];
+		}
+	}
+	
+	public function getRequestPassword(){
+		if(isset($_POST[self::$password])){
+			return $_POST[self::$password];
+		}
+	}
 }
