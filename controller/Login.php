@@ -14,24 +14,52 @@ class Login {
 			$this->dateView = new DateTimeView();
 		}
 		
+		/**
+		* Handle use cases and execute view methods
+		* @return  void
+		*/
 		public function doLogin(){
-			$msg = '';
+			$msg = null;
+			$requestUser = $this->loginView->getRequestUserName();
+			$requestPassword = $this->loginView->getRequestPassword();
 			
-			if($this->loginView->didUserPressLogin()){
+			if($this->loginView->didUserPressLogin() ){
 					
-				if(empty($this->loginView->getRequestUserName())){
+				if(empty($requestUser)){
 					$msg = $this->loginView->getErrorUsername();
-				} else if(empty($this->loginView->getRequestPassword())){
+				} else if(empty($requestPassword)){
 					$msg = $this->loginView->getErrorPassword();
-				} else if($this->loginView->getRequestUserName() === $this->user->getName() &&
-						$this->loginView->getRequestPassword() === $this->user->getPassword()){
-					$msg = $this->loginView->getWelcomeMessage();
-				} else 
+					$this->loginView->setUsernameField($requestUser);
+				} else if($requestUser == $this->user->getName() &&
+						$requestPassword == $this->user->getPassword()){
+					if($_SESSION['Logged'] == false){
+						$msg = $this->loginView->getWelcomeMessage();
+						$_SESSION['Logged'] = true;
+						
+					//if there is a session in place, remove the message
+					}else {
+						$msg = null;
+					}
+				} else{ 
 					$msg = $this->loginView->getErrorElse();
+					$this->loginView->setUsernameField($requestUser);
+				}
+			}
+			
+			else if($this->loginView->didUserPressLogout() ){
+				if($_SESSION['Logged'] == true){
+					$msg = $this->loginView->getByeMessage();
+					$_SESSION['Logged'] = false;
+					
+				//if the session is finished, remove the message
+				}else {
+					$msg = null;
+				}
 				
 			}
 			
-			$this->layoutView->render(false,$this->loginView,$this->dateView,$msg);
+			//initiate rendering
+			$this->layoutView->render($_SESSION['Logged'],$this->loginView,$this->dateView,$msg);
 		
 		}
 }

@@ -10,59 +10,41 @@ class LoginView {
 	private static $keep = 'LoginView::KeepMeLoggedIn';
 	private static $messageId = 'LoginView::Message';
 
-	private $user;
-	private $persistantUserName = '';
+	private static $userField = '';
 	
-	//public function __construct(User $u){
-		//$this->user = $u;
-	//}
 
 	/**
 	 * Create HTTP response
 	 *
 	 * Should be called after a login attempt has been determined
 	 *
+	 * @param $message, String output message
 	 * @return  void BUT writes to standard output and cookies!
 	 */
 	public function response($message) {
-	//	$message = '';
-		
-	//	if($this->didUserPressLogin()){
 	
-	//		if(empty($_POST[self::$name])) {
-	//			$message = 'Username is missing';
-	//		} else if($_POST[self::$name] == $this->user->getName() && empty($_POST[self::$password])){
-	//			$message = 'Password is missing';
-	//			$this->persistantUserName = $_POST[self::$name];
-	//		} else if(empty($_POST[self::$name]) && $_POST[self::$password] == $this->user->getPassword()){
-	//			$message = 'Username is missing';
-	//		} else if($_POST[self::$name] == $this->user->getName() && $_POST[self::$password] != $this->user->getPassword()){
-	//			$message = 'Wrong name or password';
-	//			$this->persistantUserName = $_POST[self::$name];
-	//		} else if($_POST[self::$name] != $this->user->getName() && $_POST[self::$password] == $this->user->getPassword()){
-	//			$message = 'Wrong name or password';
-	//			$this->persistantUserName = $_POST[self::$name];
-	//		} else if($_POST[self::$name] != $this->user->getName() && empty($_POST[self::$password])){
-	//			$message = 'Password is missing';
-//				$this->persistantUserName = $_POST[self::$name];
-//			} else if($_POST[self::$name] != $this->user->getName() && $_POST[self::$password] != $this->user->getPassword()){
-//				$message = 'Wrong name or password';
-	//			$this->persistantUserName = $_POST[self::$name];
-	//		} else if($_POST[self::$name] == $this->user->getName() && $_POST[self::$password] == $this->user->getPassword()){
-	//			$message = 'Welcome';
-	//			return $this->generateLogoutButtonHTML($message);
-	//		}
+		if($_SESSION['Logged'] == false)
 			return $this->generateLoginFormHTML($message);
-	//	}
-	//	else{
-	//	return $this->generateLoginFormHTML($message);
-	//	}
-	
-		//return $response;
+		else 
+			return $this->generateLogoutButtonHTML($message);
 	}
 	
+	/**
+	* Check if the login button is pressed from the form
+	* 
+	* @return  boolean
+	*/
 	public function didUserPressLogin(){
 		return isset($_POST[self::$login]);
+	}
+	
+	/**
+	* Check if the logout button is pressed from the form
+	* 
+	* @return  boolean
+	*/
+	public function didUserPressLogout(){
+		return isset($_POST[self::$logout]);
 	}
 	
 
@@ -93,7 +75,7 @@ class LoginView {
 					<p id="' . self::$messageId . '">' . $message . '</p>
 					
 					<label for="' . self::$name . '">Username :</label>
-					<input type="text" id="' . self::$name . '" name="' . self::$name . '" value="'. $this->persistantUserName .'" />
+					<input type="text" id="' . self::$name . '" name="' . self::$name . '" value="'. self::$userField .'" />
 
 					<label for="' . self::$password . '">Password :</label>
 					<input type="password" id="' . self::$password . '" name="' . self::$password . '" />
@@ -107,24 +89,47 @@ class LoginView {
 		';
 	}
 	
+	/**
+	* @return  String
+	*/
 	public function getErrorUsername(){
 		return "Username is missing";
 	}
 	
+	/**
+	* @return  String
+	*/
 	public function getErrorPassword(){
 		return "Password is missing";
 	}
 	
+	/**
+	* @return  String
+	*/
 	public function getErrorElse(){
 		return "Wrong name or password";
 	}
 	
+	/**
+	* @return  String
+	*/
 	public function getWelcomeMessage(){
 		return "Welcome";
 	}
 	
+	/**
+	* @return  String
+	*/
 	public function getByeMessage(){
-		return "Bye, bye";
+		return "Bye bye!";
+	}
+	
+	/**
+	* @param $name, String placed in the username field in the form
+	* @return  String
+	*/
+	public function setUsernameField($name){
+		self::$userField = $name;
 	}
 	
 	//CREATE GET-FUNCTIONS TO FETCH REQUEST VARIABLES
