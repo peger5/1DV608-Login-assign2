@@ -1,17 +1,19 @@
 <?php
 
-class Login {
+class LoginController {
 	
 		private $loginView;
 		private $layoutView;
 		private $dateView;
 		private $user;
 
+		
 		public function __construct(User $u){
 			$this->user = $u;
 			$this->loginView = new LoginView();
 			$this->layoutView = new LayoutView();
 			$this->dateView = new DateTimeView();
+			$this->nv = new NavigationView();
 		}
 		
 		/**
@@ -59,7 +61,7 @@ class Login {
 			}
 			
 			//initiate rendering
-			$this->layoutView->render($_SESSION['Logged'],$this->loginView,$this->dateView,$msg);
+			$this->layoutView->renderLogin($_SESSION['Logged'],$this->loginView,$this->dateView,$msg,$this->nv);
 		
 		}
 }

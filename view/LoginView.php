@@ -13,6 +13,8 @@ class LoginView {
 	private static $userField = '';
 	
 
+	
+	
 	/**
 	 * Create HTTP response
 	 *
@@ -22,8 +24,10 @@ class LoginView {
 	 * @return  void BUT writes to standard output and cookies!
 	 */
 	public function response($message) {
-	
+	//$rv = new RegistrationView();
 		if($_SESSION['Logged'] == false)
+			
+		//	return $rv->generateRegistrationFormHTML();
 			return $this->generateLoginFormHTML($message);
 		else 
 			return $this->generateLogoutButtonHTML($message);
