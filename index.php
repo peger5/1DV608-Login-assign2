@@ -10,7 +10,7 @@ ini_set('display_errors', 'On');
 require_once('view/LoginView.php');
 require_once('view/DateTimeView.php');
 require_once('view/LayoutView.php');
-require_once('view/RegistrationView.php');
+require_once('view/RegisterView.php');
 require_once('view/NavigationView.php');
 
 require_once('controller/LoginController.php');
@@ -21,20 +21,19 @@ require_once('model/User.php');
 
 //set the life ot the cookie to be 0 sec
 session_set_cookie_params(0);
-
 session_start();
 
-//set the initial value for $_SESSION['Logged']
-
-if(!isset($_SESSION['Logged']))
-	$_SESSION['Logged'] = false;
-
 $admin = new User("Admin","Password");
+$logView = new LoginView();
+$regView = new RegisterView();
+$navigationView = new NavigationView();
 
-//$loginController = new LoginController($admin);
-
-//$loginController->doLogin();
-$mc = new MasterController($admin);
+$mc = new MasterController($admin,$logView,$regView,$navigationView);
 $mc->generate();
 
+$layoutView = new LayoutView();
+$dateView = new DateTimeView();
 
+if($navigationView->inRegistrationForm())
+	$layoutView->renderRegister($admin->isLoggedIn(),$regView,$dateView,$navigationView);
+else $layoutView->renderLogin($admin->isLoggedIn(),$logView,$dateView,$navigationView);

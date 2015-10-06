@@ -9,12 +9,9 @@ class LoginView {
 	private static $cookiePassword = 'LoginView::CookiePassword';
 	private static $keep = 'LoginView::KeepMeLoggedIn';
 	private static $messageId = 'LoginView::Message';
-
+	
 	private static $userField = '';
-	
-
-	
-	
+	private static $messageField = '';
 	/**
 	 * Create HTTP response
 	 *
@@ -23,14 +20,13 @@ class LoginView {
 	 * @param $message, String output message
 	 * @return  void BUT writes to standard output and cookies!
 	 */
-	public function response($message) {
-	//$rv = new RegistrationView();
+	public function response() {
 		if($_SESSION['Logged'] == false)
+			return $this->generateLoginFormHTML(self::$messageField);
+		else {
 			
-		//	return $rv->generateRegistrationFormHTML();
-			return $this->generateLoginFormHTML($message);
-		else 
-			return $this->generateLogoutButtonHTML($message);
+			return $this->generateLogoutButtonHTML(self::$messageField);
+		}
 	}
 	
 	/**
@@ -94,41 +90,6 @@ class LoginView {
 	}
 	
 	/**
-	* @return  String
-	*/
-	public function getErrorUsername(){
-		return "Username is missing";
-	}
-	
-	/**
-	* @return  String
-	*/
-	public function getErrorPassword(){
-		return "Password is missing";
-	}
-	
-	/**
-	* @return  String
-	*/
-	public function getErrorElse(){
-		return "Wrong name or password";
-	}
-	
-	/**
-	* @return  String
-	*/
-	public function getWelcomeMessage(){
-		return "Welcome";
-	}
-	
-	/**
-	* @return  String
-	*/
-	public function getByeMessage(){
-		return "Bye bye!";
-	}
-	
-	/**
 	* @param $name, String placed in the username field in the form
 	* @return  String
 	*/
@@ -136,16 +97,63 @@ class LoginView {
 		self::$userField = $name;
 	}
 	
+	/**
+	* @return  String
+	*/
+	public function setErrorUsername(){
+		self::$messageField = "Username is missing";
+	}
+	
+	/**
+	* @return  String
+	*/
+	public function setErrorPassword(){
+		self::$messageField = "Password is missing";
+	}
+	
+	/**
+	* @return  String
+	*/
+	public function setErrorElse(){
+		self::$messageField = "Wrong name or password";
+	}
+	
+	/**
+	* @return  String
+	*/
+	public function setWelcomeMessage(){
+		self::$messageField = "Welcome";
+	}
+	
+	/**
+	* @return  String
+	*/
+	public function setMessageRegSuccess(){
+		self::$messageField = "Registered new user.";
+	}
+	
+	/**
+	* @return  String
+	*/
+	public function setByeMessage(){
+		self::$messageField = "Bye bye!";
+	}
+	
+	public function clearMessage(){
+		self::$messageField = '';
+	}
+	
+	
 	//CREATE GET-FUNCTIONS TO FETCH REQUEST VARIABLES
 	public function getRequestUserName() {
 		if(isset($_POST[self::$name])){
-			return $_POST[self::$name];
-		}
+			return trim($_POST[self::$name]);
+		} 
 	}
 	
 	public function getRequestPassword(){
 		if(isset($_POST[self::$password])){
-			return $_POST[self::$password];
+			return trim($_POST[self::$password]);
 		}
 	}
 }

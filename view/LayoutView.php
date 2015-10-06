@@ -3,19 +3,19 @@
 
 class LayoutView {
   
-  public function renderLogin($isLoggedIn, LoginView $v, DateTimeView $dtv, $message, NavigationView $nv) {
+  public function renderLogin($isLoggedIn, LoginView $v, DateTimeView $dtv, NavigationView $nv) {
     echo '<!DOCTYPE html>
       <html>
         <head>
           <meta charset="utf-8">
-          <title>Assignment 2</title>
+          <title>Assignment 4</title>
         </head>
         <body>
-          <h1>Assignment 2</h1>
+          <h1>Assignment 4</h1>
           ' . $nv->getLinks() . $this->renderIsLoggedIn($isLoggedIn) . '
           
           <div class="container">
-              ' . $v->response($message) . ' 
+              ' . $v->response() . ' 
               
               ' . $dtv->show() . '
           </div>
@@ -24,19 +24,19 @@ class LayoutView {
     ';
   }
   
-  public function renderRegister($isLoggedIn, RegistrationView $rv, DateTimeView $dtv, $message, NavigationView $nv) {
+  public function renderRegister($isLoggedIn, RegisterView $rv, DateTimeView $dtv, NavigationView $nv) {
     echo '<!DOCTYPE html>
       <html>
         <head>
           <meta charset="utf-8">
-          <title>Assignment 2</title>
+          <title>Assignment 4</title>
         </head>
         <body>
-          <h1>Assignment 2</h1>
+          <h1>Assignment 4</h1>
           ' . $nv->getLinks() . $this->renderIsLoggedIn($isLoggedIn) . '
           <h2>Register new user</h2>
           <div class="container">
-              ' . $rv->response($message) . ' 
+              ' . $rv->generateRegistrationFormHTML() . ' 
               
               ' . $dtv->show() . '
           </div>
