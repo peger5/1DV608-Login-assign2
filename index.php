@@ -17,23 +17,27 @@ require_once('controller/LoginController.php');
 require_once('controller/MasterController.php');
 require_once('controller/RegisterController.php');
 
+require_once('model/UserList.php');
 require_once('model/User.php');
+require_once('model/UserDAL.php');
+require_once('model/SessionModel.php');
 
 //set the life ot the cookie to be 0 sec
 session_set_cookie_params(0);
 session_start();
 
-$admin = new User("Admin","Password");
-$logView = new LoginView();
-$regView = new RegisterView();
-$navigationView = new NavigationView();
+$model = new SessionModel();
 
-$mc = new MasterController($admin,$logView,$regView,$navigationView);
+$logView = new LoginView($model);
+$regView = new RegisterView();
+$navigationView = new NavigationView($model);
+
+$mc = new MasterController($model,$logView,$regView,$navigationView);
 $mc->generate();
 
 $layoutView = new LayoutView();
 $dateView = new DateTimeView();
 
 if($navigationView->inRegistrationForm())
-	$layoutView->renderRegister($admin->isLoggedIn(),$regView,$dateView,$navigationView);
-else $layoutView->renderLogin($admin->isLoggedIn(),$logView,$dateView,$navigationView);
+	$layoutView->renderRegister($model->isLoggedIn(),$regView,$dateView,$navigationView);
+else $layoutView->renderLogin($model->isLoggedIn(),$logView,$dateView,$navigationView);

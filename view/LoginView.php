@@ -12,16 +12,23 @@ class LoginView {
 	
 	private static $userField = '';
 	private static $messageField = '';
+	
+	private $session;
+	
+	public function __construct(SessionModel $model){
+		$this->session = $model;
+	}
+	
 	/**
 	 * Create HTTP response
 	 *
 	 * Should be called after a login attempt has been determined
 	 *
-	 * @param $message, String output message
+	 * 
 	 * @return  void BUT writes to standard output and cookies!
 	 */
 	public function response() {
-		if($_SESSION['Logged'] == false)
+		if($this->session->isLoggedIn() == false)
 			return $this->generateLoginFormHTML(self::$messageField);
 		else {
 			
@@ -97,44 +104,27 @@ class LoginView {
 		self::$userField = $name;
 	}
 	
-	/**
-	* @return  String
-	*/
+	//set methods to change the message in the form
 	public function setErrorUsername(){
 		self::$messageField = "Username is missing";
 	}
 	
-	/**
-	* @return  String
-	*/
 	public function setErrorPassword(){
 		self::$messageField = "Password is missing";
 	}
 	
-	/**
-	* @return  String
-	*/
 	public function setErrorElse(){
 		self::$messageField = "Wrong name or password";
 	}
 	
-	/**
-	* @return  String
-	*/
 	public function setWelcomeMessage(){
 		self::$messageField = "Welcome";
 	}
 	
-	/**
-	* @return  String
-	*/
 	public function setMessageRegSuccess(){
 		self::$messageField = "Registered new user.";
 	}
 	
-	/**
-	* @return  String
-	*/
 	public function setByeMessage(){
 		self::$messageField = "Bye bye!";
 	}

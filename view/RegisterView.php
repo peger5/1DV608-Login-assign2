@@ -43,7 +43,7 @@ class RegisterView {
 		self::$userField = $name;
 	}
 	
-	//GET-FUNCTIONS TO FETCH MESSAGES
+	//SET-FUNCTIONS TO CHANGE THE MESSAGE
 	public function setErrorUsernameFewChar(){
 		self::$messageField = "Username has too few characters, at least 3 characters.";
 	}

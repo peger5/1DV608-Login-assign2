@@ -3,25 +3,27 @@
 class LoginController {
 	
 		private $loginView;
-		private $user;
+		private $model;
+		private $userList;
 
 		
-		public function __construct(User $u,LoginView $lv){
-			$this->user = $u;
+		public function __construct(UserList $l,SessionModel $m,LoginView $lv){
+			$this->userList = $l;
+			$this->model = $m;
 			$this->loginView = $lv;
 		}
 		
 		/**
-		* Handle use cases and execute view methods
+		* Handle use cases and make changes to the model
 		* @return  void
 		*/
 		public function doLogin(){
 			//check if there is a newly registered user
-			if($this->user->isJustRegistered()){
+			if($this->model->isJustRegistered()){
 				$this->loginView->setMessageRegSuccess();
-				$this->loginView->setUsernameField($this->user->getSessionUsername());
-				$this->user->toggleJustRegistered();
-				$this->user->clearSessionUsername();
+				$this->loginView->setUsernameField($this->model->getSessionUsername());
+				$this->model->toggleJustRegistered();
+				$this->model->clearSessionUsername();
 			} else $this->loginView->clearMessage();
 	
 			$requestUser = $this->loginView->getRequestUserName();
@@ -34,11 +36,10 @@ class LoginController {
 				} else if(empty($requestPassword)){
 					$this->loginView->setErrorPassword();
 					$this->loginView->setUsernameField($requestUser);
-				} else if($requestUser == $this->user->getName() &&
-						$requestPassword == $this->user->getPassword()){
-					if($this->user->isLoggedIn() == false){
+				} else if($this->userList->isCredentialsCorrect($requestUser,$requestPassword)){
+					if($this->model->isLoggedIn() == false){
 						$this->loginView->setWelcomeMessage();
-						$this->user->toggleLogged();
+						$this->model->toggleLogged();
 					//if there is a session in place, remove the message
 					}else {
 						$this->loginView->clearMessage();
@@ -50,9 +51,9 @@ class LoginController {
 			}
 			
 			else if($this->loginView->didUserPressLogout() ){
-				if($this->user->isLoggedIn() == true){
+				if($this->model->isLoggedIn() == true){
 					$this->loginView->setByeMessage();
-					$this->user->toggleLogged();
+					$this->model->toggleLogged();
 					
 				//if the session is finished, remove the message
 				}else {
@@ -61,8 +62,5 @@ class LoginController {
 				
 			}
 			
-			//initiate rendering
-			//$this->layoutView->renderLogin($_SESSION['Logged'],$this->loginView,$this->dateView,$msg,$this->nv);
-		
 		}
 }

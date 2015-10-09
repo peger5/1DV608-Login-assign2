@@ -11,16 +11,15 @@ class RegisterController {
 		private $registerView;
 		private $layoutView;
 		private $dateView;
-		private $user;
+		private $userList;
 		private $navView;
+		private $model;
 
-
-		public function __construct(User $u){
-			$this->user = $u;
-			$this->registerView = new RegisterView();
-			$this->layoutView = new LayoutView();
-			$this->dateView = new DateTimeView();
-			$this->navView = new NavigationView();
+		public function __construct(UserDAL $l,SessionModel $m,RegisterView $rv, NavigationView $nv){
+			$this->model = $m;
+			$this->userList = $l;
+			$this->registerView = $rv;
+			$this->navView = $nv;
 		}
 		
 		/**
@@ -28,7 +27,6 @@ class RegisterController {
 		* @return  void
 		*/
 		public function doRegister(){
-			//$msg = null;
 			$requestUser = $this->registerView->getRequestUserName();
 			$requestPassword = $this->registerView->getRequestPassword();
 			$requestRePassword = $this->registerView->getRequestRePassword();
@@ -36,9 +34,15 @@ class RegisterController {
 			if($this->registerView->didUserPressRegister() ){
 				try{
 				if($this->checkUsername($requestUser) && $this->checkPassword($requestPassword,$requestRePassword)){
-					$this->user->toggleJustRegistered();
-					$this->user->setSessionUsername($requestUser);
+					//create and add new user
+					$newUser = new User($requestUser,$requestPassword);
+					$this->userList->add($newUser);
+					
+					$this->model->toggleJustRegistered();
+					$this->model->setSessionUsername($requestUser);
 					$this->navView->clearURL();
+					
+					
 					}
 				} 
 				catch (UserFewCharException $ufce){
@@ -64,17 +68,13 @@ class RegisterController {
 				if(empty($requestUser) && empty($requestPassword) && empty($requestRePassword))
 					$this->registerView->setErrorMissingFields();		
 			}
-			
-			//initiate rendering
-		//	$this->layoutView->renderRegister($_SESSION['Logged'],$this->registerView,$this->dateView,$msg,$this->navView);
-		
 		}
 		
 		//Private methods to check validity of fields
 		private function checkUsername($name){
 			if(strlen($name) < 3)
 				throw new UserFewCharException();
-			if($name == $this->user->getName())
+			if($this->userList->getUsers()->getUserByName($name) != null)
 				throw new UserExistsException();
 			if($name != strip_tags($name))
 				throw new UserBadCharException();

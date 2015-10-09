@@ -6,6 +6,11 @@ class NavigationView {
 	 * @var string
 	 */ 
 	private static $registerURL = "register";
+	private $session;
+	
+	public function __construct(SessionModel $m){
+		$this->session = $m;
+	}
 	
 	/**
 	* Used to build links to direct the user to login or register.
@@ -14,7 +19,7 @@ class NavigationView {
 	public function getLinks(){
 		if($this->inRegistrationForm())
 			return $this->getLinkToLogin();
-		else if(!$this->inRegistrationForm() && $_SESSION['Logged'] == false) 
+		else if(!$this->inRegistrationForm() && $this->session->isLoggedIn() == false) 
 			return $this->getLinkToRegister();
 		else return "";
 	}
